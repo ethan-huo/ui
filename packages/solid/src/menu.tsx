@@ -52,6 +52,7 @@ import {
   createParts,
   providePrimitive,
   renderStatic,
+  rootScope,
   usePart,
   usePrimitive,
   type PartProps,
@@ -115,7 +116,7 @@ type MenuProps = MenuOptions & {
  * A list of actions and options, opened from a button or a right-click. Put its trigger and content inside.
  * @stable
  */
-function Menu(props: MenuProps) {
+const Menu = rootScope(function Menu(props: MenuProps) {
   const menubar = useContext(MenubarContext)
   const options = omit(props, "children", "container")
   const menu = usePrimitive(menuPrimitive, () => ({
@@ -151,7 +152,7 @@ function Menu(props: MenuProps) {
       </ContainerContext>
     </MenuContext>
   )
-}
+})
 
 // Children, called with the part's state when they're a function of it.
 const withState = (children: unknown, state: unknown) =>
@@ -633,7 +634,7 @@ type MenuSubProps = Pick<
  * A submenu. Put its `MenuSubTrigger` and `MenuSubContent` inside, in a menu's content.
  * @stable
  */
-function MenuSub(props: MenuSubProps) {
+const MenuSub = rootScope(function MenuSub(props: MenuSubProps) {
   const parent = useMenu()
   const options = omit(props, "children")
   const menu = usePrimitive(menuPrimitive, () => ({
@@ -645,7 +646,7 @@ function MenuSub(props: MenuSubProps) {
       {providePrimitive(menu, () => props.children)}
     </MenuContext>
   )
-}
+})
 
 /**
  * The item that opens its submenu.

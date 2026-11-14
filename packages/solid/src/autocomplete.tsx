@@ -33,6 +33,7 @@ import { inSheetHeader, sheetHeader, SheetHeaderContext } from "./sheet-header"
 import {
   createParts,
   providePrimitive,
+  rootScope,
   useAround,
   usePart,
   usePrimitive,
@@ -85,7 +86,7 @@ type AutocompleteProps = AutocompleteOptions & {
  * A text field that suggests as you type. The text is the value. Renders no element of its own.
  * @stable
  */
-function Autocomplete(props: AutocompleteProps) {
+const Autocomplete = rootScope(function Autocomplete(props: AutocompleteProps) {
   const field = useFieldControl()
   const options = omit(props, "children", "container")
   const autocomplete = usePrimitive(autocompletePrimitive, () => ({
@@ -115,7 +116,7 @@ function Autocomplete(props: AutocompleteProps) {
       </ContainerContext>
     </AutocompleteContext>
   )
-}
+})
 
 /**
  * A visible label for the field.

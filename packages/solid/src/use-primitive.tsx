@@ -411,6 +411,16 @@ type PrimitiveHandle<P extends Primitive> = {
 
 const noProps = () => ({})
 
+// A root reads its options in its body. Running it in a memo of its own keeps a controlled input
+// that hasn't produced yet from suspending, and rebuilding, the component that renders the root.
+function rootScope<C extends (props: never) => JSX.Element>(component: C) {
+  const render = component as unknown as (props: unknown) => JSX.Element
+  const scoped = (props: unknown) =>
+    createMemo(() => untrack(() => render(props)))
+  Object.defineProperty(scoped, "name", { value: component.name })
+  return scoped as unknown as C
+}
+
 /**
  * Creates an instance of a primitive for this component, keeps its options
  * current, and destroys it when the component unmounts. Pass the options as a
@@ -1177,23 +1187,25 @@ function createParts<
 
   const rootTag = (tags as Record<string, Tag>).root
   const rootProps = schema.slots.root ?? {}
-  parts.Root = (props) => {
-    const handle = usePrimitive(
-      primitive,
-      () => pick(props, schema.options) as OptionsOf<P>
-    )
-    if (rootTag) {
-      const rest = elementProps(props, schema.options, rootProps)
-      return usePart(
-        handle,
-        "root" as never,
-        () => pick(props, rootProps) as never,
-        rest,
-        rootTag
+  parts.Root = rootScope(
+    (props: Record<string, unknown> & { children?: JSX.Element }) => {
+      const handle = usePrimitive(
+        primitive,
+        () => pick(props, schema.options) as OptionsOf<P>
       )
+      if (rootTag) {
+        const rest = elementProps(props, schema.options, rootProps)
+        return usePart(
+          handle,
+          "root" as never,
+          () => pick(props, rootProps) as never,
+          rest,
+          rootTag
+        )
+      }
+      return providePrimitive(handle, () => props.children)
     }
-    return providePrimitive(handle, () => props.children)
-  }
+  )
 
   for (const [slot, tag] of Object.entries(tags as Record<string, Tag>)) {
     if (slot === "root") {
@@ -1271,6 +1283,7 @@ export {
   type RenderProp,
   renderAs,
   renderStatic,
+  rootScope,
   toSolidProps,
   useAround,
   useHandle,

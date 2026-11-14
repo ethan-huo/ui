@@ -29,6 +29,7 @@ import {
   createParts,
   providePrimitive,
   renderStatic,
+  rootScope,
   usePart,
   usePrimitive,
   type PartProps,
@@ -73,7 +74,7 @@ type PopoverProps = PopoverOptions & { children?: JSX.Element }
  * Rich content in a floating panel, opened from a button. Put its trigger and content inside.
  * @stable
  */
-function Popover(props: PopoverProps) {
+const Popover = rootScope(function Popover(props: PopoverProps) {
   const options = omit(props, "children", "container")
   const popover = usePrimitive(popoverPrimitive, () => ({ ...options }))
   useControllerEntry(() => props.controller, popover)
@@ -84,7 +85,7 @@ function Popover(props: PopoverProps) {
       </ContainerContext>
     </PopoverContext>
   ))
-}
+})
 
 type TriggerPartProps = Omit<
   PartProps<"button", PopoverTriggerState>,

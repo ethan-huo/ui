@@ -28,6 +28,7 @@ import {
   createParts,
   providePrimitive,
   renderStatic,
+  rootScope,
   usePart,
   usePrimitive,
   type PartProps,
@@ -66,7 +67,7 @@ type TooltipProps = TooltipOptions & { children?: JSX.Element }
  * A short label or hint that appears when the pointer rests on its trigger or keyboard focus reaches it.
  * @stable
  */
-function Tooltip(props: TooltipProps) {
+const Tooltip = rootScope(function Tooltip(props: TooltipProps) {
   const options = omit(props, "children", "container")
   const tooltip = usePrimitive(tooltipPrimitive, () => ({ ...options }))
   useControllerEntry(() => props.controller, tooltip)
@@ -77,7 +78,7 @@ function Tooltip(props: TooltipProps) {
       </ContainerContext>
     </TooltipContext>
   ))
-}
+})
 
 type TriggerPartProps = Omit<
   PartProps<"button", TooltipTriggerState>,

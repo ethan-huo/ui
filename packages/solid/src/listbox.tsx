@@ -13,6 +13,7 @@ import { formInputs } from "./form-inputs"
 import { ListItems, type ListParts } from "./list-items"
 import {
   createParts,
+  rootScope,
   usePart,
   usePrimitive,
   type PartProps,
@@ -69,9 +70,10 @@ const optionKeys = [
  * `multiple` makes the value a list.
  * @stable
  */
-function Listbox<T = string, Multiple extends boolean | undefined = false>(
-  props: ListboxProps<T, Multiple>
-) {
+const Listbox = rootScope(function Listbox<
+  T = string,
+  Multiple extends boolean | undefined = false,
+>(props: ListboxProps<T, Multiple>) {
   const field = useFieldControl(props)
   // Typed loosely: the union `Multiple` picks is too large for `omit`.
   const loose = props as ListboxProps<any, boolean>
@@ -103,7 +105,7 @@ function Listbox<T = string, Multiple extends boolean | undefined = false>(
       {formInputs(listbox, () => props.multiple)}
     </>
   )
-}
+})
 
 /**
  * An option. Pressing it selects it, or toggles it with `multiple`.

@@ -56,6 +56,7 @@ import { inSheetHeader, sheetHeader, SheetHeaderContext } from "./sheet-header"
 import {
   createParts,
   providePrimitive,
+  rootScope,
   useAround,
   usePart,
   usePrimitive,
@@ -117,9 +118,10 @@ type ComboboxProps<
  * `multiple` makes the value a list.
  * @stable
  */
-function Combobox<T = string, Multiple extends boolean | undefined = false>(
-  props: ComboboxProps<T, Multiple>
-) {
+const Combobox = rootScope(function Combobox<
+  T = string,
+  Multiple extends boolean | undefined = false,
+>(props: ComboboxProps<T, Multiple>) {
   const field = useFieldControl()
   const options = omit(props, "children", "container")
   const combobox = usePrimitive(comboboxPrimitive, () => ({
@@ -162,7 +164,7 @@ function Combobox<T = string, Multiple extends boolean | undefined = false>(
       </ContainerContext>
     </ComboboxContext>
   )
-}
+})
 
 /**
  * A visible label for the input.
